@@ -13,19 +13,17 @@
     "kuroshiro": "^1.2.0",
     "kuroshiro-analyzer-kuromoji": "^1.1.0",
     "lodash": "^4.17.15",
-    "typescript": "^4.1.2"
+    "typescript": "^4.1.2",
+    "winston": "^3.8.2"
   },
   "scripts": {
     "lint": "eslint --fix --ext .ts src",
     "clean": "rm -rf ./gen",
     "dev": "nodemon --watch 'src/**/*.ts' --exec PORT=6789 ts-node index.ts",
-
     "build-ts": "sh ./scripts/build-protos.sh && npm run start-ts",
     "start-ts": "PORT=6789 ts-node ./index.ts",
-
     "build": "sh ./scripts/build-protos.sh && tsc && npm start",
     "start": "PORT=6789 node ./dist/index.js",
-
     "test": "jest --coverage"
   },
   "devDependencies": {

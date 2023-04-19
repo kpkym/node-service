@@ -1,12 +1,13 @@
 import {expect, test} from '@jest/globals';
 import {exportedForTesting} from './furigana'
+import Log from "../../config/logging";
 
 
 test('check', async () => {
     let input = "感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！";
 
     let output = await exportedForTesting.parse(input);
-    console.log(output)
+    Log.info(output)
 });
 
 

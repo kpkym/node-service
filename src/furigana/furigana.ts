@@ -4,15 +4,15 @@ import {sendUnaryData, UntypedHandleCall} from '@grpc/grpc-js';
 import {FuriganaServiceConvertRequest, FuriganaServiceConvertResponse} from '../../gen/furigana/v1/request_pb';
 import Kuroshiro from "kuroshiro";
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+import Log from "../../config/logging";
 
 let kuroshiro = null;
 
 
 export class FuriganaServiceServer implements IFuriganaServiceServer {
     async convert(call: grpc.ServerUnaryCall<FuriganaServiceConvertRequest, FuriganaServiceConvertResponse>, callback: sendUnaryData<FuriganaServiceConvertResponse>): Promise<void> {
-        console.log(`${new Date().toISOString()}    request ${call.request}`);
-        console.log(`${new Date().toISOString()}    request ${call.request.getMode()}`);
-        console.log(`${new Date().toISOString()}    request ${call.request.getMode()}`);
+        Log.info(`${new Date().toISOString()}    request: ${call.request}`);
+        Log.info(`${new Date().toISOString()}    request: ${call.request.getTo()}`);
 
         const furiganaServiceConvertResponse = new FuriganaServiceConvertResponse();
         let body = call.request.getBody();
@@ -26,7 +26,7 @@ export class FuriganaServiceServer implements IFuriganaServiceServer {
 async function parse(body: string): Promise<string> {
 
     if (kuroshiro == null) {
-        console.log("init kuroshiro");
+        Log.info("init kuroshiro");
         // Initialize
         kuroshiro = new Kuroshiro()
         // Here uses async/await, you could also use Promise
