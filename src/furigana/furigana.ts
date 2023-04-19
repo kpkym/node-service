@@ -12,30 +12,25 @@ let kuroshiro = null;
 export class FuriganaServiceServer implements IFuriganaServiceServer {
     async convert(call: grpc.ServerUnaryCall<FuriganaServiceConvertRequest, FuriganaServiceConvertResponse>, callback: sendUnaryData<FuriganaServiceConvertResponse>): Promise<void> {
         Log.info(`${new Date().toISOString()}    request: ${call.request}`);
-        Log.info(`${new Date().toISOString()}    request: ${call.request.getTo()}`);
-
         const furiganaServiceConvertResponse = new FuriganaServiceConvertResponse();
-        let body = call.request.getBody();
-        furiganaServiceConvertResponse.setBody(`hello: ${body}`);
+        furiganaServiceConvertResponse.setBody(await parse(call.request));
         callback(null, furiganaServiceConvertResponse);
     }
 
     [name: string]: UntypedHandleCall;
 }
 
-async function parse(body: string): Promise<string> {
+async function parse(request: FuriganaServiceConvertRequest): Promise<string> {
 
     if (kuroshiro == null) {
         Log.info("init kuroshiro");
-        // Initialize
         kuroshiro = new Kuroshiro()
-        // Here uses async/await, you could also use Promise
         await kuroshiro.init(new KuromojiAnalyzer());
     }
-    // Convert what you want
-    return await kuroshiro.convert(body, {mode: "furigana", to: "hiragana"});
+    let resp = await kuroshiro.convert(request.getBody(), {mode: request.getMode(), to: request.getTo()});
+    Log.info(`parse result: ${resp}`)
+    return resp;
 }
-
 
 export const exportedForTesting = {
     parse
