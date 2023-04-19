@@ -18,12 +18,25 @@
   "scripts": {
     "lint": "eslint --fix --ext .ts src",
     "clean": "rm -rf ./gen",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec PORT=6789 ts-node index.ts",
+
+    "build-ts": "sh ./scripts/build-protos.sh && npm run start-ts",
+    "start-ts": "PORT=6789 ts-node ./index.ts",
+
     "build": "sh ./scripts/build-protos.sh && tsc && npm start",
-    "start": "PORT=6789 node ./dist/index.js"
+    "start": "PORT=6789 node ./dist/index.js",
+
+    "test": "jest --coverage"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
-    "eslint": "^8.38.0"
+    "eslint": "^8.38.0",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1"
   }
 }

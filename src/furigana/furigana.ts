@@ -1,4 +1,4 @@
-import {IFuriganaServiceServer} from 'gen/furigana/v1/request_grpc_pb';
+import {IFuriganaServiceServer} from '../../gen/furigana/v1/request_grpc_pb';
 import * as grpc from '@grpc/grpc-js';
 import {sendUnaryData, UntypedHandleCall} from '@grpc/grpc-js';
 import {FuriganaServiceConvertRequest, FuriganaServiceConvertResponse} from '../../gen/furigana/v1/request_pb';
@@ -8,19 +8,24 @@ import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
 
 export class FuriganaServiceServer implements IFuriganaServiceServer {
     async convert(call: grpc.ServerUnaryCall<FuriganaServiceConvertRequest, FuriganaServiceConvertResponse>, callback: sendUnaryData<FuriganaServiceConvertResponse>): Promise<void> {
-        console.log(`${new Date().toISOString()}    request ${call.request.getBody()}`);
-
-        const kuroshiro = new Kuroshiro();
-        // Initialize
-        // Here uses async/await, you could also use Promise
-        await kuroshiro.init(new KuromojiAnalyzer());
-        // Convert what you want
-        const result = await kuroshiro.convert(call.request.getBody(), {mode: "furigana", to: "hiragana"});
+        console.log(`${new Date().toISOString()}    request ${call.request}`);
+        console.log(`${new Date().toISOString()}    request ${call.request.getMode()}`);
+        console.log(`${new Date().toISOString()}    request ${call.request.getMode()}`);
 
         const furiganaServiceConvertResponse = new FuriganaServiceConvertResponse();
-        furiganaServiceConvertResponse.setBody(`hello: ${result}`);
+        let body = call.request.getBody();
+        furiganaServiceConvertResponse.setBody(`hello: ${body}`);
         callback(null, furiganaServiceConvertResponse);
     }
 
     [name: string]: UntypedHandleCall;
+}
+
+export async function parse(body: string): Promise<string> {
+    const kuroshiro = new Kuroshiro();
+    // Initialize
+    // Here uses async/await, you could also use Promise
+    await kuroshiro.init(new KuromojiAnalyzer());
+    // Convert what you want
+    return await kuroshiro.convert(body, {mode: "furigana", to: "hiragana"});
 }
